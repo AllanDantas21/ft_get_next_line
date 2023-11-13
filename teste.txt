@@ -1,0 +1,1 @@
+A resposta é 42\n
