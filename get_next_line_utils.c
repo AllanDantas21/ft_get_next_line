@@ -43,21 +43,6 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	size_t	len;
-
-	len = ft_strlen(src);
-	if (size > 0)
-	{
-		size -= 1;
-		while (*src && size--)
-			*dst++ = *src++;
-		*dst = '\0';
-	}
-	return (len);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	char	*s;
@@ -74,5 +59,38 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	while (*s2)
 		*s++ = *s2++;
 	*s = '\0';
+	return (pos);
+}
+size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+{
+	size_t	len;
+
+	len = ft_strlen(src);
+	if (size > 0)
+	{
+		size -= 1;
+		while (*src && size--)
+			*dst++ = *src++;
+		*dst = '\0';
+	}
+	return (len);
+}
+
+char	*ft_strdup(const char *s)
+{
+	char	*s1;
+	char	*s2;
+	char	*pos;
+
+	s1 = (char *)s;
+	s2 = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
+	if (!s2)
+		return (NULL);
+	pos = s2;
+	while (*s1)
+	{
+		*s2++ = *s1++;
+	}
+	*s2 = 0;
 	return (pos);
 }

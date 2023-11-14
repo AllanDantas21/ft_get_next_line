@@ -25,42 +25,62 @@ int	check_newline(char *s)
 	return (0);
 }
 
-char	*handle_remaining(char *remaining, char *buffer)
+char	*get_backup(char *line)
 {
-	char	*join;
-	join = ft_strjoin(remaining, buffer);
-	return (join);
+	size_t	count;
+	char	*backup;
+
+	count = 0;
+	while (line[count] != '\n' && line[count] != '\0')
+		count++;
+	if (line[count] == '\0')
+		return (0);
+	backup = ft_substr(line, count + 1, ft_strlen(line));
+	if (!backup)
+	{
+		free(backup);
+		backup == NULL;	
+	}
+	line[count + 1] == '\0';
+	return (backup);
 }
 
-char	*get_line(int fd, char *str)
+char	*get_line(int fd, char *buff, char *backup)
 {	
-	char *line;
-	int	newline;
+	char	*line;
+	char	*temp;
+	int		newline;
 
 	newline = 0;
-	read(fd, str, BUFFER_SIZE);
-	if ((newline = check_newline(str)) != 0)
+	read(fd, buff, BUFFER_SIZE);
+	if ((newline = check_newline(buff)) != 0)
 	{
-		line = ft_substr(str, 0, newline);
+		line = ft_substr(buff, 0, newline);
 	}
 	else
-		line	= ft_substr(str, 0, BUFFER_SIZE);
+		line	= ft_substr(buff, 0, BUFFER_SIZE);
+	if (!backup)
+		backup = ft_strdup("");
+	temp = backup;
+	line = ft_strjoin(backup, line); 
+	free(temp);
+	temp = NULL;
 	return (line);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*reads_rest;
+	static char	*backup;
+	char		*buffer;
 	char		*line;
-	char		*
-	int			newline;
 
 	if (fd < 0 | BUFFER_SIZE < 0)
 		return (NULL);
-	newline = 0;
-	line = malloc(sizeof(char) * BUFFER_SIZE);
-	line = get_line(fd, line);
-	newline = check_newline(line);
-	reads_rest += newline;
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	line = get_line(fd, buffer, backup);
+	free(buffer);
+	backup = get_backup(line);
 	return	(line);
 }
