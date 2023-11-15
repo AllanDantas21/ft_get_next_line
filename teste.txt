@@ -1,3 +1,1 @@
-esse é o teste da get next line\n
-e a resposta é 42!\n
-abacate
+

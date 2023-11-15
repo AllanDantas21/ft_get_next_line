@@ -13,9 +13,9 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 
-int	check_newline(char *s)
+static int	check_newline(char *s)
 {
-	int	i;
+	int	i;	
 	i = 0;
 	while (s[i] != '\0')
 	{
@@ -25,7 +25,7 @@ int	check_newline(char *s)
 	return (0);
 }
 
-char	*get_backup(char *line)
+static char	*get_backup(char *line)
 {
 	size_t	count;
 	char	*backup;
@@ -45,10 +45,21 @@ char	*get_backup(char *line)
 	return (backup);
 }
 
-char	*get_line(int fd, char *buff, char *backup)
+static char	*concat_backup(char *backup, char *line)
+{
+	char	*full_line;
+
+	if (!backup)
+		backup = ft_strdup("");
+	full_line = ft_strjoin(backup, line);
+	if(!full_line)
+		return (0);
+	return (full_line);
+}
+
+static char	*get_line(int fd, char *buff, char *backup)
 {	
 	char	*line;
-	char	*temp;
 	int		newline;
 
 	newline = 0;
@@ -59,12 +70,7 @@ char	*get_line(int fd, char *buff, char *backup)
 	}
 	else
 		line	= ft_substr(buff, 0, BUFFER_SIZE);
-	if (!backup)
-		backup = ft_strdup("");
-	temp = backup;
-	line = ft_strjoin(backup, line); 
-	free(temp);
-	temp = NULL;
+	line = concat_backup(backup, line);
 	return (line);
 }
 
@@ -80,7 +86,10 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	line = get_line(fd, buffer, backup);
-	free(buffer);
+	free(buffer);	
+	buffer = NULL;
+	if (!line)
+		return (NULL);
 	backup = get_backup(line);
 	return	(line);
 }
