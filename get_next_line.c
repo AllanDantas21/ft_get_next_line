@@ -3,25 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldantas <marvin@42.fr>                    +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/13 17:14:39 by aldantas          #+#    #+#             */
-/*   Updated: 2023/11/13 18:05:52 by aldantas         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-#include <stdio.h>
-#include <fcntl.h>
-#include "get_next_line.h"
 
-static int	check_newline(char *s)
+
+static char	*ft_check(const char *s, int i)
 {
-	int	i;	
-	i = 0;
-	while (s[i] != '\0')
+	while (*s)
 	{
-		if (s[i++] == '\n')
-			return (i - 1);
+		if (*s == i)
+			return ((char *)s);
+		s++;
 	}
+	if (i == '\0')
+		return ((char *)s);
 	return (0);
 }
 
@@ -29,49 +22,46 @@ static char	*get_backup(char *line)
 {
 	size_t	count;
 	char	*backup;
-
+	
 	count = 0;
 	while (line[count] != '\n' && line[count] != '\0')
 		count++;
-	if (line[count] == '\0')
+	if (line[count] == '\0' || line[1] == '\0')
 		return (0);
-	backup = ft_substr(line, count + 1, ft_strlen(line));
-	if (!backup)
+	backup = ft_substr(line, count + 1, ft_strlen(line) - count);
+	if (*backup == '\0')
 	{
 		free(backup);
-		backup == NULL;	
+		backup = NULL;
 	}
-	line[count + 1] == '\0';
+	line[count + 1] = '\0';
 	return (backup);
 }
 
-static char	*concat_backup(char *backup, char *line)
+static char	*get_line(int fd, char *buf, char *backup)
 {
-	char	*full_line;
+	int		read_line;
+	char	*char_temp;
 
-	if (!backup)
-		backup = ft_strdup("");
-	full_line = ft_strjoin(backup, line);
-	if(!full_line)
-		return (0);
-	return (full_line);
-}
-
-static char	*get_line(int fd, char *buff, char *backup)
-{	
-	char	*line;
-	int		newline;
-
-	newline = 0;
-	read(fd, buff, BUFFER_SIZE);
-	if ((newline = check_newline(buff)) != 0)
+	read_line = 1;
+	while (read_line != '\0')
 	{
-		line = ft_substr(buff, 0, newline);
+		read_line = read(fd, buf, BUFFER_SIZE);
+		if (read_line == -1)
+			return (0);
+		else if (read_line == 0)
+			break ;
+		buf[read_line] = '\0';
+		if (!backup)
+			backup = ft_strdup("");
+		char_temp = backup;
+		backup = ft_strjoin(char_temp, buf);
+		free(char_temp);
+		char_temp = NULL;
+		if (ft_check (buf, '\n'))
+			break ;
 	}
-	else
-		line	= ft_substr(buff, 0, BUFFER_SIZE);
-	line = concat_backup(backup, line);
-	return (line);
+	return (backup);
 }
 
 char	*get_next_line(int fd)
@@ -86,10 +76,8 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	line = get_line(fd, buffer, backup);
-	free(buffer);	
-	buffer = NULL;
+	backup = get_backup(buffer);
 	if (!line)
 		return (NULL);
-	backup = get_backup(line);
-	return	(line);
+	return(line);
 }
