@@ -11,10 +11,8 @@ int	main(void)
 
 	line = get_next_line(fd);
 	printf("%s\n", line);
-	line = get_next_line(fd);
-	printf("%s\n", line);
-	line = get_next_line(fd);
-	printf("%s\n", line);
+	//line = get_next_line(fd);
+	//printf("%s\n", line);
 	close(fd);
 	return 0;
 }

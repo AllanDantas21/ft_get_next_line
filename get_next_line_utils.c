@@ -11,6 +11,24 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
+char	*ft_strchr(const char *s, int c)
+{
+	unsigned char	*a;
+
+	if (c > 127)
+		c %= 256;
+	a = (unsigned char *) s;
+	while (*a)
+	{
+		if (*a == (unsigned char)c)
+			return ((char *)(a));
+		a++;
+	}
+	if (*a == c)
+		return ((char *)(a));
+	return (NULL);
+}
+
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	unsigned int	s_len;
@@ -74,23 +92,4 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 		*dst = '\0';
 	}
 	return (len);
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*s1;
-	char	*s2;
-	char	*pos;
-
-	s1 = (char *)s;
-	s2 = (char *)malloc(sizeof(char) * (ft_strlen(s) + 1));
-	if (!s2)
-		return (NULL);
-	pos = s2;
-	while (*s1)
-	{
-		*s2++ = *s1++;
-	}
-	*s2 = 0;
-	return (pos);
 }

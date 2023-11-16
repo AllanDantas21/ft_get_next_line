@@ -13,65 +13,76 @@
 #include <fcntl.h>
 #include "get_next_line.h"
 
-static int	check_newline(char *s)
+static char	*get_line(char *buff)
 {
-	int	i;	
+	int		i;
+	char	*s;
+
 	i = 0;
-	while (s[i] != '\0')
-	{
-		if (s[i++] == '\n')
-			return (i - 1);
-	}
-	return (0);
+	if (!buff[i])
+		return (NULL);
+	while (buff[i] && buff[i] != '\n')
+		i++;
+	s = (char *)malloc(sizeof(char) * i + 2);
+	if (!s)
+		return (NULL);
+	i = 0;
+	while (buff[i] && buff[i] != '\n')
+		s[i] = buff[i++];
+	if (buff[i] == '\n')
+		s[i] = buff[i++];
+	s[i] = '\0';
+	return (s);
 }
 
-static char	*get_backup(char *line)
+static char	*get_backup(char *buff)
 {
-	size_t	count;
-	char	*backup;
+	char	*s;
+	int		i;
+	int		c;
 
-	count = 0;
-	while (line[count] != '\n' && line[count] != '\0')
-		count++;
-	if (line[count] == '\0')
-		return (0);
-	backup = ft_substr(line, count + 1, ft_strlen(line));
-	if (!backup)
+	i = 0;
+	while (buff[i] && buff[i] != '\n')
+		i++;
+	if (!buff[i])
 	{
-		free(backup);
-		backup == NULL;	
+		free(buff);
+		return (NULL);
 	}
-	line[count + 1] == '\0';
+	s = (char *)malloc(sizeof(char) * (ft_strlen(buff) - i + 1));
+	if (!s)
+		return (NULL);
+	i++;
+	c = 0;
+	while (buff[i])
+		s[c++] = buff[i++];
+	s[c] = '\0';
+	free (buff);
+	return (s);
+}
+
+static char	*get_buffer(int fd, char *backup)
+{
+	char	*buff;
+	int		read_bytes;
+
+	buff = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buff)
+		return (NULL);
+	read_bytes = 1;
+	while (!ft_strchr(backup, '\n') && read_bytes != 0)
+	{
+		read_bytes = read(fd, buff, BUFFER_SIZE);
+		if (read_bytes == -1)
+		{
+			free (buff);
+			return (NULL);
+		}
+		buff[read_bytes] = '\0';
+		backup = ft_strjoin(backup, buff);
+	}
+	free (buff);
 	return (backup);
-}
-
-static char	*concat_backup(char *backup, char *line)
-{
-	char	*full_line;
-
-	if (!backup)
-		backup = ft_strdup("");
-	full_line = ft_strjoin(backup, line);
-	if(!full_line)
-		return (0);
-	return (full_line);
-}
-
-static char	*get_line(int fd, char *buff, char *backup)
-{	
-	char	*line;
-	int		newline;
-
-	newline = 0;
-	read(fd, buff, BUFFER_SIZE);
-	if ((newline = check_newline(buff)) != 0)
-	{
-		line = ft_substr(buff, 0, newline);
-	}
-	else
-		line	= ft_substr(buff, 0, BUFFER_SIZE);
-	line = concat_backup(backup, line);
-	return (line);
 }
 
 char	*get_next_line(int fd)
@@ -81,15 +92,11 @@ char	*get_next_line(int fd)
 	char		*line;
 
 	if (fd < 0 | BUFFER_SIZE < 0)
-		return (NULL);
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+		return (0);
+	buffer = get_buffer(fd, buffer);
 	if (!buffer)
 		return (NULL);
-	line = get_line(fd, buffer, backup);
-	free(buffer);	
-	buffer = NULL;
-	if (!line)
-		return (NULL);
-	backup = get_backup(line);
+	line = get_line(buffer);
+	backup = get_backup(buffer);
 	return	(line);
 }
