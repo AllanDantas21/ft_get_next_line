@@ -32,7 +32,7 @@ static char	*get_backup(char *line)
 	count = 0;
 	while (line[count] != '\n' && line[count] != '\0')
 		count++;
-	if (line[count] == '\0' || line[1] == '\0')
+	if (line[count] == '\0')
 		return (0);
 	backup = ft_substr(line, count + 1, ft_strlen(line) - count);
 	if (*backup == '\0')
