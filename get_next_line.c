@@ -3,7 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-
+/*   By: aldantas <aldantas@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/11/13 17:14:56 by aldantas          #+#    #+#             */
+/*   Updated: 2023/11/13 17:14:57 by aldantas         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+#include "get_next_line.h"
 
 static char	*ft_check(const char *s, int i)
 {
@@ -41,7 +47,7 @@ static char	*get_backup(char *line)
 static char	*get_line(int fd, char *buf, char *backup)
 {
 	int		read_line;
-	char	*char_temp;
+	char	*s_temp;
 
 	read_line = 1;
 	while (read_line != '\0')
@@ -54,10 +60,10 @@ static char	*get_line(int fd, char *buf, char *backup)
 		buf[read_line] = '\0';
 		if (!backup)
 			backup = ft_strdup("");
-		char_temp = backup;
-		backup = ft_strjoin(char_temp, buf);
-		free(char_temp);
-		char_temp = NULL;
+		s_temp = backup;
+		backup = ft_strjoin(s_temp, buf);
+		free(s_temp);
+		s_temp = NULL;
 		if (ft_check (buf, '\n'))
 			break ;
 	}
@@ -76,8 +82,9 @@ char	*get_next_line(int fd)
 	if (!buffer)
 		return (NULL);
 	line = get_line(fd, buffer, backup);
-	backup = get_backup(buffer);
+	free(buffer);
 	if (!line)
 		return (NULL);
+	backup = get_backup(line);
 	return(line);
 }

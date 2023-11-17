@@ -5,12 +5,11 @@ int	main(void)
 {
 	int		fd;
 	const	char *file_name = "teste.txt";
-	char	*line;
 
 	fd = open(file_name, O_RDONLY);
 
-	line = get_next_line(fd);
-	printf("%s\n", line);
+	printf("%s\n", get_next_line(fd));
+	printf("%s\n", get_next_line(fd));
 	close(fd);
 	return 0;
 }
