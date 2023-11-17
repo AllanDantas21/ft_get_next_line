@@ -72,19 +72,19 @@ static char	*get_line(int fd, char *buf, char *backup)
 
 char	*get_next_line(int fd)
 {
-	static char	*backup;
-	char		*buffer;
+	static char	*backup[257];
+	char		*buffer[257];
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE < 0)
+	if (fd < 0 || BUFFER_SIZE < 0 || fd > 256)
 		return (NULL);
-	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buffer)
+	buffer[fd] = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer[fd])
 		return (NULL);
-	line = get_line(fd, buffer, backup);
-	free(buffer);
+	line = get_line(fd, buffer[fd], backup[fd]);
+	free(buffer[fd]);
 	if (!line)
 		return (NULL);
-	backup = get_backup(line);
+	backup[fd] = get_backup(line);
 	return (line);
 }
