@@ -61,6 +61,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	*s = '\0';
 	return (pos);
 }
+
 size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 {
 	size_t	len;

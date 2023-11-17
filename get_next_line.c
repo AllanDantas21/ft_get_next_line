@@ -28,7 +28,7 @@ static char	*get_backup(char *line)
 {
 	size_t	count;
 	char	*backup;
-	
+
 	count = 0;
 	while (line[count] != '\n' && line[count] != '\0')
 		count++;
@@ -86,5 +86,5 @@ char	*get_next_line(int fd)
 	if (!line)
 		return (NULL);
 	backup = get_backup(line);
-	return(line);
+	return (line);
 }
