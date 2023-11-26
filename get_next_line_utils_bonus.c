@@ -9,7 +9,7 @@
 /*   Updated: 2023/11/13 17:14:57 by aldantas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
