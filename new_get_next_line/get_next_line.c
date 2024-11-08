@@ -22,13 +22,28 @@ static char	*ft_check_new_line(const char *s)
 	return (0);
 }
 
-static char	*get_line(int fd, char *buf, char *backup)
+static char	*get_line(int fd, char *backup)
 {
+  char *buff[BUFFER_SIZE];
+  char *line;
+  int   ret;
 
+  ret = 1;
+  if (backup)
+    add_node_in_list(); // adicionar add list
+  while (ret > 0)
+  {
+    
+  }
+  return (line);
 }
 
 
 char	*get_next_line(int fd)
 {
+  static char *backup_line = NULL;
+  char *ret_line;
 
+  ret_line = get_line(fd, backup_line);
+  
 }
