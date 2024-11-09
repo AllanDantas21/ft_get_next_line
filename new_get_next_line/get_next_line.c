@@ -44,11 +44,6 @@ static char	*get_line(t_data *data, char *backup)
   return (line);
 }
 
-void extractors(t_data *data)
-{
-  //extrair ret_line e backup
-}
-
 char	*get_next_line(int fd)
 {
   static char *backup_line = NULL;
@@ -57,6 +52,7 @@ char	*get_next_line(int fd)
   data = (t_data){0};
   data.fd = fd;
   backup_line = get_line(&data, backup_line);
+  extract_ret_line(data.head);
   free_all_list(&data);
   return(data.ret_line);
 }

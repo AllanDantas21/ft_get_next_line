@@ -23,6 +23,7 @@ typedef struct s_data
   t_list  *head;
 } t_data;
 
+void extract_ret_line(t_list *list);
 void free_all_list(t_data *data);
 void add_node_in_list(t_data *data, char *line);
 

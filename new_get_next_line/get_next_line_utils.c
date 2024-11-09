@@ -9,6 +9,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
+#include "stdio.h"
+
+void extract_ret_line(t_list *list)
+{
+  // extrair o ret line 
+  t_list *node;
+  int i;
+
+  i = 0;
+  node = list;
+  while (node)
+  {
+    while (node->line[i] && node->line[i] != '\n')
+      i++;
+    node = node->next;
+  }
+  printf("%d", i);
+}
+
+/*char *extract_backup()
+{
+  // extrair o backup
+}*/
 
 void free_all_list(t_data *data)
 {
