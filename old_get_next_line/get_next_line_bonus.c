@@ -50,7 +50,7 @@ static char	*get_line(int fd, char *buf, char *backup)
 	char	*s_temp;
 
 	read_line = 1;
-	while (read_line != '\0')
+	while (read_line != 0)
 	{
 		read_line = read(fd, buf, BUFFER_SIZE);
 		if (read_line == -1)
