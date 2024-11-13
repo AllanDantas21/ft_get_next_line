@@ -46,6 +46,7 @@ void extract_ret_line(t_data *data)
         node = node->next;
     }
     line[i] = '\0';
+    printf("%s", line);
     data->ret_line = line;
 }
 
