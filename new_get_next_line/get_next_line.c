@@ -51,7 +51,8 @@ static char *get_line(t_data *data)
     t_list *node;
 
     buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-    while (42)
+    ret = 1;
+    while (ret > 0)
     {
         ret = read(data->fd, buff, BUFFER_SIZE);
         if (ret <= 0)
@@ -66,17 +67,17 @@ static char *get_line(t_data *data)
 
 char *get_next_line(int fd)
 {
-    //static char *backup_line = NULL;
+    static char *backup_line = NULL;
     t_data data;
 
     data = (t_data){0};
     data.fd = fd;
     data.head = NULL;
-    // if (backup_line)
-    //     add_node_in_list(&data, backup_line);
+    if (backup_line)
+         add_node_in_list(&data, backup_line);
     get_line(&data);
     extract_ret_line(&data);
-   //  backup_line = extract_backup(&data);
+    backup_line = extract_backup(&data);
     free_all_list(&data);
     return (data.ret_line);
 }
@@ -88,22 +89,14 @@ char *get_next_line(int fd)
 int main(void)
 {
     int fd;
-    char *line;
+    char *line = NULL;
 
     fd = open("teste.txt", O_RDONLY);
     if (fd == -1) {
         perror("Erro ao abrir o arquivo");
         return 1;
     }
-    line = get_next_line(fd);
-    printf("%s", line);
-    free(line);
-    line = get_next_line(fd);
-    printf("%s", line);
-    free(line);
-    line = get_next_line(fd);
-    printf("%s", line);
-    free(line);
-    close(fd);
+    while(line = get_next_line(fd))
+        printf("%s", line);
     return 0;
 }

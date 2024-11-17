@@ -58,7 +58,7 @@ void extract_ret_line(t_data *data)
         }
         node = node->next;
     }
-    line = malloc(len + 1);
+    line = malloc(len + 2);
     if (!line)
         return;
     copy_lines(data->head, line, 0);
@@ -89,7 +89,7 @@ char *extract_backup(t_data *data)
         }
         node = node->next;
     }
-    backup = malloc(len + 1);
+    backup = malloc(len + 2);
     if (!backup)
         return NULL;
     copy_lines(data->head, backup, 1);
