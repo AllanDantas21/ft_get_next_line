@@ -9,123 +9,88 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
-#include "stdio.h"
+#include <stdio.h>
+#include <stdlib.h>
 
-void copy_lines(t_list *node, char *dest, int start_from_newline)
+char    *ft_strchr(const char *s, int c)
 {
-    int i = 0;
-    int j = 0;
-    int found_newline = 0;
-
-    while (node)
+    while (*s)
     {
-        j = 0;
-        while (node->line[j])
-        {
-            if (start_from_newline && found_newline)
-                dest[i++] = node->line[j];
-            else if (!start_from_newline)
-                dest[i++] = node->line[j];
-            if (node->line[j] == '\n')
-                found_newline = 1;
-            j++;
-        }
-        node = node->next;
+        if (*s == (char)c)
+            return ((char *)s);
+        s++;
     }
-    dest[i] = '\0';
+    if (c == '\0')
+        return ((char *)s);
+    return (NULL);
 }
 
-void extract_ret_line(t_data *data)
+char    *ft_strdup(const char *s)
 {
-    t_list *node;
-    char *line;
-    int len;
-    int i;
+    char    *copy;
+    size_t  len;
+    size_t  i;
 
-    if (!data->head)
-        return;
-    node = data->head;
     len = 0;
-    while (node)
+    while (s[len])
+        len++;
+    copy = (char *)malloc(len + 1);
+    if (!copy)
+        return (NULL);
+    i = 0;
+    while (i < len)
     {
-        i = 0;
-        while (node->line[i])
-        {
-            len++;
-            if (node->line[i] == '\n')
-                break;
-            i++;
-        }
-        node = node->next;
+        copy[i] = s[i];
+        i++;
     }
-    line = malloc(len + 2);
-    if (!line)
-        return;
-    copy_lines(data->head, line, 0);
-    data->ret_line = line;
+    copy[i] = '\0';
+    return (copy);
 }
 
-char *extract_backup(t_data *data)
+char    *ft_strndup(const char *s, size_t n)
 {
-    t_list *node;
-    char *backup;
-    int len;
-    int i;
-    int found_newline;
+    char    *copy;
+    size_t  i;
 
-    node = data->head;
-    len = 0;
-    found_newline = 0;
-    while (node)
+    copy = (char *)malloc(n + 1);
+    if (!copy)
+        return (NULL);
+    i = 0;
+    while (i < n && s[i])
     {
-        i = 0;
-        while (node->line[i])
-        {
-            if (found_newline)
-                len++;
-            if (node->line[i] == '\n')
-                found_newline = 1;
-            i++;
-        }
-        node = node->next;
+        copy[i] = s[i];
+        i++;
     }
-    backup = malloc(len + 2);
-    if (!backup)
-        return NULL;
-    copy_lines(data->head, backup, 1);
-    return backup;
+    copy[i] = '\0';
+    return (copy);
 }
 
-void free_all_list(t_data *data)
+char    *ft_strjoin(const char *s1, const char *s2)
 {
-    t_list *tmp;
+    char    *joined;
+    size_t  len1;
+    size_t  len2;
+    size_t  i;
 
-    while (data->head)
-    {
-        tmp = data->head;
-        data->head = data->head->next;
-        free(tmp);
-    }
-}
-
-void add_node_in_list(t_data *data, char *line)
-{
-    t_list *node;
-    t_list *current;
-
-    current = NULL;
-    node = malloc(sizeof(t_list));
-    if (!node)
-        return;
-    node->line = line;
-    node->next = NULL;
-    if (!data->head)
-    {
-        data->head = node;
-        return;
-    }
-    current = data->head;
-    while (current->next)
-        current = current->next;
-    current->next = node;
+    if (!s1)
+        s1 = "";
+    if (!s2)
+        s2 = "";
+    len1 = 0;
+    while (s1[len1])
+        len1++;
+    len2 = 0;
+    while (s2[len2])
+        len2++;
+    joined = (char *)malloc(len1 + len2 + 1);
+    if (!joined)
+        return (NULL);
+    i = -1;
+    while (++i < len1)
+        joined[i] = s1[i];
+    i = -1;
+    while (++i < len2)
+        joined[len1 + i] = s2[i];
+    joined[len1 + len2] = '\0';
+    return (joined);
 }

@@ -2,30 +2,25 @@
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
+
 # include <stdlib.h>
 # include <unistd.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 4
+#  define BUFFER_SIZE 42
 # endif
 
 typedef struct s_list
 {
-  char *line;
-  struct s_list *next;
-} t_list;
+    char          *data;
+    struct s_list *next;
+}   t_list;
 
-typedef struct s_data
-{
-  int     fd;
-  char    *line;
-  char    *ret_line;
-  t_list  *head;
-} t_data;
-
-char *extract_backup(t_data *data);
-void extract_ret_line(t_data *data);
-void free_all_list(t_data *data);
-void add_node_in_list(t_data *data, char *line);
+size_t  ft_strlen(const char *s);
+char    *get_next_line(int fd);
+char    *ft_strjoin(const char *s1, const char *s2);
+char    *ft_strchr(const char *s, int c);
+char    *ft_strdup(const char *s);
+char    *ft_strndup(const char *s, size_t n);
 
 #endif

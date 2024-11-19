@@ -10,82 +10,104 @@
 /*                                                                            */
 /* ************************************************************************** */
 #include "get_next_line.h"
-#include "stdio.h"
 
-static int ft_check_new_line(const char *s)
+static t_list *get_node(t_list **list)
 {
-	while (*s)
-	{
-		if (*s && *s == '\n')
-			return (1);
-		s++;
-	}
-	return (0);
+    if (!*list)
+    {
+        *list = (t_list *)malloc(sizeof(t_list));
+        if (!*list)
+            return (NULL);
+        (*list)->data = ft_strdup("");
+        (*list)->next = NULL;
+    }
+    return (*list);
 }
 
-static char *ft_strdup(const char *s)
+static void remove_node(t_list **list)
 {
-    char *str;
-    int i;
+    t_list *temp;
 
-    i = 0;
-    while (s[i])
-        i++;
-    str = malloc(sizeof(char) * (i + 1));
-    if (!str)
-        return (NULL);
-    i = 0;
-    while (s[i])
+    if (*list)
     {
-        str[i] = s[i];
-        i++;
+        temp = *list;
+        *list = temp->next;
+        free(temp->data);
+        free(temp);
     }
-    str[i] = '\0';
-    return (str);
 }
 
-static char *get_line(t_data *data)
+static char *extract_line(char **data)
 {
-    char *buff;
-    int ret;
-    t_list *node;
+    char    *newline;
+    char    *line;
+    char    *temp;
 
-    buff = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-    ret = 1;
-    while (ret > 0)
+    newline = NULL;
+    if (*data)
+        newline = ft_strchr(*data, '\n');
+    if (newline)
     {
-        ret = read(data->fd, buff, BUFFER_SIZE);
-        if (ret <= 0)
-            break;
-        buff[ret] = '\0';
-        add_node_in_list(data, ft_strdup(buff));
-        if (ft_check_new_line(buff))
-            break;
+        line = ft_strndup(*data, newline - *data + 1);
+        temp = ft_strdup(newline + 1);
+        free(*data);
+        *data = temp;
     }
-    return (NULL);
+    else
+    {
+        line = ft_strdup(*data);
+        free(*data);
+        *data = NULL;
+    }
+    return (line);
+}
+
+static int read_fd(int fd, t_list *node)
+{
+    char    buffer[BUFFER_SIZE + 1];
+    char    *temp;
+    ssize_t bytes_read;
+
+    while (!ft_strchr(node->data, '\n'))
+    {
+        bytes_read = read(fd, buffer, BUFFER_SIZE);
+        if (bytes_read <= 0)
+            return (bytes_read);
+        buffer[bytes_read] = '\0';
+        temp = ft_strjoin(node->data, buffer);
+        free(node->data);
+        node->data = temp;
+    }
+    return (1);
 }
 
 char *get_next_line(int fd)
 {
-    static char *backup_line = NULL;
-    t_data data;
+    static t_list *list;
+    t_list        *node;
+    char          *line;
 
-    data = (t_data){0};
-    data.fd = fd;
-    data.head = NULL;
-    if (backup_line)
-         add_node_in_list(&data, backup_line);
-    get_line(&data);
-    extract_ret_line(&data);
-    backup_line = extract_backup(&data);
-    free_all_list(&data);
-    return (data.ret_line);
+    if (fd < 0 || BUFFER_SIZE <= 0)
+        return (NULL);
+    node = get_node(&list);
+    if (!node)
+        return (NULL);
+    if (read_fd(fd, node) == -1)
+        return(remove_node(&list), NULL);
+    line = extract_line(&(node->data));
+    if (!line || !line[0])
+    {
+        free(line);
+        remove_node(&list);
+        return (NULL);
+    }
+    return (line);
 }
+
 
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
-
 int main(void)
 {
     int fd;
@@ -96,7 +118,11 @@ int main(void)
         perror("Erro ao abrir o arquivo");
         return 1;
     }
-    while(line = get_next_line(fd))
+    while((line = get_next_line(fd)) != NULL)
+    {
         printf("%s", line);
+        free(line);
+    }
+    close(fd);
     return 0;
 }
