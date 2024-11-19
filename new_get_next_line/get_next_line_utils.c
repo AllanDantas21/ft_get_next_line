@@ -12,6 +12,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+size_t  ft_strlen(const char *s)
+{
+    size_t  len;
+
+    len = 0;
+    while (s[len])
+        len++;
+    return (len);
+}
+
 char    *ft_strchr(const char *s, int c)
 {
     while (*s)
@@ -67,7 +77,7 @@ char    *ft_strndup(const char *s, size_t n)
 
 char    *ft_strjoin(const char *s1, const char *s2)
 {
-    char    *joined;
+    char    *join;
     size_t  len1;
     size_t  len2;
     size_t  i;
@@ -76,21 +86,17 @@ char    *ft_strjoin(const char *s1, const char *s2)
         s1 = "";
     if (!s2)
         s2 = "";
-    len1 = 0;
-    while (s1[len1])
-        len1++;
-    len2 = 0;
-    while (s2[len2])
-        len2++;
-    joined = (char *)malloc(len1 + len2 + 1);
-    if (!joined)
+    len1 = ft_strlen(s1);
+    len2 = ft_strlen(s2);
+    join = (char *)malloc(len1 + len2 + 1);
+    if (!join)
         return (NULL);
     i = -1;
     while (++i < len1)
-        joined[i] = s1[i];
+        join[i] = s1[i];
     i = -1;
     while (++i < len2)
-        joined[len1 + i] = s2[i];
-    joined[len1 + len2] = '\0';
-    return (joined);
+        join[len1 + i] = s2[i];
+    join[len1 + len2] = '\0';
+    return (join);
 }

@@ -104,25 +104,24 @@ char *get_next_line(int fd)
     return (line);
 }
 
+// #include <fcntl.h>
+// #include <unistd.h>
+// #include <stdio.h>
+// int main(void)
+// {
+//     int fd;
+//     char *line = NULL;
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
-int main(void)
-{
-    int fd;
-    char *line = NULL;
-
-    fd = open("teste.txt", O_RDONLY);
-    if (fd == -1) {
-        perror("Erro ao abrir o arquivo");
-        return 1;
-    }
-    while((line = get_next_line(fd)) != NULL)
-    {
-        printf("%s", line);
-        free(line);
-    }
-    close(fd);
-    return 0;
-}
+//     fd = open("teste.txt", O_RDONLY);
+//     if (fd == -1) {
+//         perror("Erro ao abrir o arquivo");
+//         return 1;
+//     }
+//     while((line = get_next_line(fd)) != NULL)
+//     {
+//         printf("%s", line);
+//         free(line);
+//     }
+//     close(fd);
+//     return 0;
+// }
